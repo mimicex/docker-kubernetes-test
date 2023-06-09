@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-deployment
+  template:
+    metadata:
+      labels:
+        app: my-deployment
+      # 紀錄
+      annotations:
+        version: latest
+        release_date: 2023/06/02
+    spec:
+      containers:
+      - name: mctw-test
+        image: mctw_test
+        ports:
+        - containerPort: 3000
+        env:
+        - name: SECRET_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mctw-db-user-pass
+              # describe secrets data裡面的 key
+              key: password.txt
+        - name: SECRET_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mctw-db-user-pass
+              # describe secrets data裡面的 key
+              key: password.txt
+        # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+        livenessProbe:
+          httpGet:
+            path: /
+            port: mctw-test
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 30  
+          successThreshold: 1
+          failureThreshold: 3
+      # gcp image 需要密鑰
+      imagePullSecrets:
+      - name: mctw-key

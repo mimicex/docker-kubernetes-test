@@ -31,7 +31,6 @@ https://kubernetes.io/docs/tutorials/hello-minikube/
 kubectl run hello-my-test --image=gcr.io/google_containers/echoserver:1.8 --port=8080
 ```
 
-
 # 顯示所有 pods
 ```
 kubectl get pods
@@ -43,4 +42,12 @@ kubectl get pods --show-labels
 # 刪除 pod
 ```
 kubectl delete pod hello-my-tes
+```
+
+# 建立 pod label
+kubectl label pods hello-my-test version=latest
+
+# 自動拓展 pods Deployment
+```
+kubectl create -f ./my-deployment.yaml
 ```
